@@ -1,0 +1,16 @@
+{
+    // "extends": "@tsconfig/node19/tsconfig.json",
+    "include": [
+        "__tests__/**/*.ts",
+        "jest.config.*.ts",
+        "src/**/*",
+    ],
+    "exclude": [
+        "node_modules",
+    ],
+    "compilerOptions": {
+        "outDir": "dist",
+        "strict": true,
+        "esModuleInterop": true,
+    }
+}
