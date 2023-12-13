@@ -2,7 +2,7 @@ import { Server } from "node:http";
 import express, { Application } from "express";
 import { getConfig, setConfig } from "./config/appConfig";
 import { mountRoutes } from "./routes";
-import { DemoConsumer } from "./handler/DemoConsumer";
+import { DemoConsumer } from "./handler/demo.consumer";
 import { KafkaConfig } from "kafkajs";
 
 export class App {

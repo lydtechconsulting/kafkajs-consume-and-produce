@@ -1,5 +1,5 @@
 {
-  "name": "kafkajs-demo",
+  "name": "typescript-testcontainers-demo",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.ts",
