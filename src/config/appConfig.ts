@@ -7,14 +7,21 @@ let config: AppConfig;
 //       and keeps the typescript types in sync.
 // note: you may want to 'parameterize' this for different environments
 export const setConfig = (): void => {
-  config = {
-    server: {
-      port: 1234,
-    },
-    kafka: {
-      brokerAddress: "http://localhost:6789",
-    },
-  };
+
+    let kafkaBrokers: string[] = ["localhost:9092"]
+    const globalAny: any = global;
+		const globalBrokerUrl = globalAny.__KAFKA_BROKERS__;
+    if(globalBrokerUrl) {
+        kafkaBrokers = globalBrokerUrl
+    } 
+    config = {
+        server: {
+            port: 1234
+        },
+        kafka: {
+            brokerAddress: kafkaBrokers
+        },
+    };
 };
 
 export const getConfig = (): AppConfig => {

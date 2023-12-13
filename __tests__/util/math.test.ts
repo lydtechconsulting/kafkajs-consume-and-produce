@@ -1,4 +1,4 @@
-import { add } from "./math";
+import { add } from "../../src/util/math";
 
 describe("add", () => {
   test("should add two numbers together", () => {

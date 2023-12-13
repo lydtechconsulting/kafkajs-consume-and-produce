@@ -8,6 +8,9 @@ export type KafkaConfig = {
 };
 
 export type AppConfig = {
-  server: ServerConfig;
-  kafka: KafkaConfig;
+    // get<T>(arg0: string): unknown
+    server: ServerConfig
+    kafka: {
+        brokerAddress: string[]
+    };
 };
