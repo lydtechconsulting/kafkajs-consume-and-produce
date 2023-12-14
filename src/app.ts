@@ -17,7 +17,7 @@ export class App {
         mountRoutes(this.app);
     }
 
-    start() {
+    async start() {
         const config = getConfig();
 
         const port = config.server.port;
@@ -30,11 +30,11 @@ export class App {
             brokers: config.kafka.brokerAddress
         } as KafkaConfig
         this.demoConsumer = new DemoConsumer(kafkaConfig);
-        this.demoConsumer.listen();
+        await this.demoConsumer.listen();
     }
 
-    stop() {
+    async stop() {
         this.server?.close()
-        this.demoConsumer?.disconnect()
+        await this.demoConsumer?.disconnect()
     }
 }

@@ -7,7 +7,7 @@
     "clean": "rm -rf ./build ./node_modules",
     "dev": "nodemon src/index.ts",
     "test": "concurrently \"npm run test:integration\" \"npm run test:unit\"",
-    "test:integration": "jest --runInBand --config jest.config.integration.ts",
+    "test:integration": "jest --runInBand --config jest.config.integration.ts --detectOpenHandles",
     "test:unit": "jest --config jest.config.unit.ts"
   },
   "keywords": [],

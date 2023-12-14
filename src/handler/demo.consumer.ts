@@ -9,18 +9,24 @@ export class DemoConsumer {
     }
   
     async listen(): Promise<void> {
-        await this.consumer.connect();
-        await this.consumer.subscribe({ topic: 'inbound-topic' })
-        await this.consumer.run({ eachMessage: payload => this.handle(payload) })
+        try {
+            await this.consumer.connect()
+            await this.consumer.subscribe({ topic: 'inbound-topic', fromBeginning: true })
+            await this.consumer.run({ eachMessage: payload => this.handle(payload) })
+        } catch(e) {
+            console.error(e)
+        }
     }
 
     async disconnect(): Promise<void> {
-		await this.consumer.disconnect();
-	}
+        try {
+	    	await this.consumer.disconnect();
+        } catch(e) {
+            console.error(e)
+        }
+    }
 
     async handle(payload: EachMessagePayload) {
-        return console.log({
-            value: payload
-        })
+        console.log({value: payload})
     }
 }

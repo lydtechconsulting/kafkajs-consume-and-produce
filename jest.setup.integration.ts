@@ -11,20 +11,23 @@ module.exports = async () => {
 		__KAFKA_BROKERS__: string[]
 	};
 
-	// Create a network so the docker contains can talk to each other.
 	const network = await new Network().start();
 	globalWithKafka.__NETWORK__ = network;
 
 	const kafkaContainer = await new KafkaContainer(
 		process.env.KAFKA_CONTAINER_IMAGE
 	)
+		.withName('kafka')
 		.withNetworkMode(network.getName())
 		.withNetworkAliases('kafka')
-		// .withEnvironment({
-		// 	'KAFKA_ADVERTISED_LISTENERS': 'PLAINTEXT://kafka:9092',
-		// 	'KAFKA_LISTENER_SECURITY_PROTOCOL_MAP': 'INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT',
-		// 	'KAFKA_INTER_BROKER_LISTENER_NAME': 'PLAINTEXT'
-		// })
+		.withEnvironment({
+			// 'KAFKA_LISTENER_SECURITY_PROTOCOL_MAP': 'PLAINTEXT:PLAINTEXT,BROKER:PLAINTEXT',
+            // 'KAFKA_ADVERTISED_LISTENERS': 'PLAINTEXT://kafka:9093,BROKER://localhost:9092',
+			// 'KAFKA_INTER_BROKER_LISTENER_NAME': 'PLAINTEXT',
+			'KAFKA_BROKER_ID': '1',
+			'KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR': '1',
+			'KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR': '1'
+		})
 		.withExposedPorts(9092, DEFAULT_KAFKA_PORT)
 		.start();
 
