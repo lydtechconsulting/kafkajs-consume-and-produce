@@ -1,5 +1,6 @@
-import { ITopicConfig, Kafka } from "kafkajs";
+import { ITopicConfig, Kafka, KafkaMessage } from "kafkajs";
 import { App } from "../../src/app";
+import waitForExpect from "wait-for-expect";
 
 describe("integration", () => {
 
@@ -41,7 +42,23 @@ describe("integration", () => {
         })
 
         await producer.disconnect()
+
+        const consumer = kafka.consumer({groupId: 'test-consumer'})
+        await consumer.connect()
+        await consumer.subscribe({ topic: 'outbound-topic', fromBeginning: true })
+        let received = false
+        await consumer.run({
+            eachMessage: async ({ message }) => {
+                console.log(`Message received: ${JSON.stringify(message)}`)
+                received = true
+            },
+        })
+
+        await waitForExpect( () => {
+            expect(received).toBeTruthy()
+        }, 5000);
+
+        await consumer.disconnect()
         await app.stop()
-        console.log('done');
-    });
-});
+    })
+})

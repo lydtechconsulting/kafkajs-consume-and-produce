@@ -4,6 +4,8 @@ import { getConfig, setConfig } from "./config/appConfig";
 import { mountRoutes } from "./routes";
 import { DemoConsumer } from "./handler/demo.consumer";
 import { KafkaConfig } from "kafkajs";
+import KafkaService from "./service/kafka.service";
+import { DemoService } from "./service/demo.service";
 
 export class App {
     private readonly app: Application
@@ -29,8 +31,10 @@ export class App {
         const kafkaConfig = {
             brokers: config.kafka.brokerAddress
         } as KafkaConfig
-        this.demoConsumer = new DemoConsumer(kafkaConfig);
+        this.demoConsumer = new DemoConsumer(new DemoService(new KafkaService(kafkaConfig)), kafkaConfig);
         await this.demoConsumer.listen();
+
+        const kafkaServie: KafkaService = new KafkaService(kafkaConfig);
     }
 
     async stop() {
