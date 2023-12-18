@@ -14,9 +14,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.23.6",
-    "@babel/preset-env": "^7.23.6",
-    "@babel/preset-typescript": "^7.23.3",
     "@testcontainers/kafka": "^10.3.2",
     "@tsconfig/node19": "^19.1.2",
     "@types/config": "^0.0.39",

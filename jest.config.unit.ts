@@ -1,22 +1,3 @@
-// import type { Config } from "@jest/types";
-// import baseConfig from "./jest.config.base";
-
-// const unitTestConfig: Config.InitialOptions = {
-//   ...baseConfig,
-//   collectCoverageFrom: ["src/**/*.ts"],
-//   coverageThreshold: {
-//     global: {
-//       statements: 0,
-//       branches: 0,
-//       functions: 0,
-//       lines: 0,
-//     },
-//   },
-//   testMatch: ["<rootDir>/src/**/*.test.ts"],
-// };
-
-// export default unitTestConfig;
-
 module.exports = {
 	globals: {
 		'ts-jest': {
@@ -45,9 +26,8 @@ module.exports = {
 	modulePathIgnorePatterns: ['helpers/*', '<rootDir>/dist', '<rootDir>/schema', 'component/*', 'integration/*'],
 	moduleFileExtensions: ['ts', 'js'],
 	resetMocks: true,
-	// setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+	setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 	testEnvironment: 'node',
-	// testResultsProcessor: 'jest-sonar-reporter',
 	transform: {
 		'^.+\\.(ts|tsx)$': 'ts-jest'
 	}
