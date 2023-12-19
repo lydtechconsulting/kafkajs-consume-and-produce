@@ -9,10 +9,14 @@ npm install testcontainers @testcontainers/kafka
 
 ```
 npm install
+npx prisma generate
 npm run test
-npm run dev
+```
 
-curl localhost:1234/message
+When the service is running, get the version via the REST API:
+
+```
+curl localhost:1234/version
 ```
 
 npm run test:unit

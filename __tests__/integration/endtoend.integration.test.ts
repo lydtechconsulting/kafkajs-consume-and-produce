@@ -1,6 +1,7 @@
-import { ITopicConfig, Kafka, KafkaMessage } from "kafkajs";
+import { Kafka } from "kafkajs";
 import { App } from "../../src/app";
 import waitForExpect from "wait-for-expect";
+import request from "supertest";
 
 describe("integration", () => {
 
@@ -30,8 +31,13 @@ describe("integration", () => {
         })
         await admin.disconnect()
 
-        app = new App();
+        app = new App()
         await app.start()
+
+        const response = await request('http://localhost:1234').get("/version")
+        expect(response.statusCode).toBe(200)
+        expect(response.body).toEqual('v1')
+        console.log(`Version received: ${JSON.stringify(response.body)}`)
 
         const producer = kafka.producer()
     
