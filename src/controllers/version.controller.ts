@@ -12,6 +12,7 @@ export class VersionController {
         const versionService = this.versionService;
         
         const version = await versionService.getVersion();
+        console.log(`Retrieved version: ${version}`);
 
         response.status(200).json(version);
     }

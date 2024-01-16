@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import { Network, StartedNetwork } from 'testcontainers';
 import { KafkaContainer, StartedKafkaContainer } from '@testcontainers/kafka';
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from "@testcontainers/postgresql";
+import seed from './prisma/seed';
+import { execSync } from 'child_process';
 
 const DEFAULT_KAFKA_PORT = 9093;
 const DEFAULT_POSTGRES_PORT = 5432;
@@ -52,17 +54,10 @@ module.exports = async () => {
 
 	globalTestcontainers.__POSTGRES_URL__ = `${postgresHost}:${postgresPort}`
 
-	const prisma = new PrismaClient({
-		datasourceUrl: `postgresql://user:password@${postgresHost}:${postgresPort}/db?schema=demo`
-	})
+	process.env.DATABASE_URL = `postgresql://user:password@${postgresHost}:${postgresPort}/db?schema=demo`
 
-	await prisma.$executeRaw`CREATE SCHEMA IF NOT EXISTS demo`;
-	await prisma.$executeRaw`CREATE TABLE "Version" ("id" SERIAL NOT NULL, "version" TEXT NOT NULL, CONSTRAINT "Version_pkey" PRIMARY KEY ("id"))`;
-	
-	await prisma.version.create({
-		data: {
-			version: 'v1',
-		},
-	})
+	execSync('npx prisma migrate dev --name init', { stdio: 'inherit' });
+
+	await seed();
 };
 

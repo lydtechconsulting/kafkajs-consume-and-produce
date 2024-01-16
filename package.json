@@ -5,6 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "clean": "rm -rf ./build ./node_modules",
+    "start": "node dist/src/index.js",
+    "build": "tsc",
     "dev": "nodemon src/index.ts",
     "test": "concurrently \"npm run test:integration\" \"npm run test:unit\"",
     "test:integration": "jest --runInBand --config jest.config.integration.ts --detectOpenHandles",

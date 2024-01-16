@@ -34,7 +34,7 @@ describe("integration", () => {
         app = new App()
         await app.start()
 
-        const response = await request('http://localhost:1234').get("/version")
+        const response = await request('http://localhost:3000').get("/version")
         expect(response.statusCode).toBe(200)
         expect(response.body).toEqual('v1')
         console.log(`Version received: ${JSON.stringify(response.body)}`)

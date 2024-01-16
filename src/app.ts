@@ -33,8 +33,6 @@ export class App {
         } as KafkaConfig
         this.demoConsumer = new DemoConsumer(new DemoService(new KafkaService(kafkaConfig)), kafkaConfig);
         await this.demoConsumer.listen();
-
-        const kafkaServie: KafkaService = new KafkaService(kafkaConfig);
     }
 
     async stop() {
