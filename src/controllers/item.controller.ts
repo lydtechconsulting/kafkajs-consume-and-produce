@@ -11,7 +11,7 @@ export class ItemController {
     async createItem(request: Request, response: Response) {
         const itemService = this.itemService;
         if(request.body.name == undefined) {
-            console.log("Item name not set");
+            console.error("Item name not set");
             return response.status(400);
         }
         const item = await itemService.createItem(request.body.name);
@@ -22,13 +22,13 @@ export class ItemController {
     async getItem(request: Request, response: Response) {
         const itemService = this.itemService;
         if(request.params.itemId == undefined) {
-            console.log("itemId not set");
+            console.error("itemId not set");
             return response.status(400);
         }
         const item = await itemService.getItem(parseInt(request.params.itemId));
 
         if(item == null) {
-            console.log(`Item not found with id: ${request.params.itemId}`);
+            console.error(`Item not found with id: ${request.params.itemId}`);
             return response.status(404);
         } else {
             console.log(`Item found with name: ${item}`);

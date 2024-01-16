@@ -1,24 +1,34 @@
 import { VersionController } from "../../src/controllers/version.controller";
 import { VersionService } from "../../src/service/version.service";
-var httpMocks = require('node-mocks-http');
+import { Request } from 'express';
 
 describe('VersionController', () => {
-    let controller: VersionController;
+    let versionController: VersionController;
+    let versionService: VersionService;
   
-    it('get version', async () => {
-        const versionService = new VersionService()
-        const getVersionSpy = jest.spyOn(versionService, "getVersion").mockImplementation(async () => 'v1');
-        controller = new VersionController(versionService);
+    let mockRequest: Request;
+    let mockResponse: any;
+  
+    beforeEach(() => {
+        versionService = new VersionService();
+        versionController = new VersionController(versionService);
+        mockRequest = { params: {} } as Request;
+        mockResponse = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn().mockReturnThis(),
+        };
+    });
 
-        var mockRequest  = httpMocks.createRequest({
-            method: 'GET',
-            url: '/version',
+    describe('getVersion', () => {
+        it('should return 200 with the version', async () => {
+            const versionServiceGetVersionSpy = jest.spyOn(versionService, "getVersion").mockImplementation(async () => 'v1');
+            versionController = new VersionController(versionService);
+
+            await versionController.getVersion(mockRequest, mockResponse);
+
+            expect(versionServiceGetVersionSpy).toHaveBeenCalledTimes(1);
+            expect(mockResponse.status).toHaveBeenCalledWith(200);
+            expect(mockResponse.json).toHaveBeenCalledWith('v1');
         });
-        var mockResponse = httpMocks.createResponse();
-        const mockResponseStatusSpy = jest.spyOn(mockResponse, 'status');
-        
-        await controller.getVersion(mockRequest, mockResponse);
-        expect(mockResponseStatusSpy).toHaveBeenCalled();
-        expect(getVersionSpy).toHaveBeenCalledTimes(1);
     });
 });
