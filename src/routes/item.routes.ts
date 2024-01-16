@@ -14,6 +14,7 @@ export class ItemRoutes {
   }
 
   registerRoutes() {
-      this.router.get("/", this.controller.getItem.bind(this.controller));
+      this.router.post("/", this.controller.createItem.bind(this.controller));
+      this.router.get("/:itemId", this.controller.getItem.bind(this.controller));
   }
 }

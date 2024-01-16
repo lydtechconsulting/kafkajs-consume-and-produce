@@ -1,16 +1,23 @@
-import { PrismaClient } from '@prisma/client';
+import { Item } from '@prisma/client'
+import prisma from '../db/prisma.client'
 
 export class ItemService {
 
-    async getItem(): Promise<String|undefined> {
-        const prismaClient = await this.getPrismaClient()
-        const result = await prismaClient.version.findFirst()
-        return result?.version
+    async createItem(name: string): Promise<Item> {
+        const item = await prisma.item.create({
+            data: {
+                name: name
+            }
+        })
+        return item
     }
 
-    async getPrismaClient(): Promise<PrismaClient> {
-        return new PrismaClient({
-            datasourceUrl: process.env.DATABASE_URL
+    async getItem(id: number): Promise<Item|null> {
+        const item = await prisma.item.findUnique({
+            where: {
+                id: id
+            }
         })
+        return item
     }
 }

@@ -56,8 +56,10 @@ module.exports = async () => {
 
 	process.env.DATABASE_URL = `postgresql://user:password@${postgresHost}:${postgresPort}/db?schema=demo`
 
+	// Run the Prisma migration scripts.
 	execSync('npx prisma migrate dev --name init', { stdio: 'inherit' });
 
+	// Seed the database.
 	await seed();
 };
 

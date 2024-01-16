@@ -3,24 +3,16 @@ import { App } from "../../src/app";
 import waitForExpect from "wait-for-expect";
 import request from "supertest";
 
-describe("integration", () => {
+describe("end to end integration tests", () => {
 
     let app: App
+    let kafka: Kafka
 
 	beforeAll(async () => {
-        
-	});
-
-	afterAll(async () => {
-		
-	});
-
-    test("end to end test", async () => {
-
         const globalAny: any = global;
 		const globalBrokerUrl = globalAny.__KAFKA_BROKERS__;
-        const kafka = new Kafka({
-            clientId: 'test-producer',
+        kafka = new Kafka({
+            clientId: 'test-client',
             brokers: globalBrokerUrl,
         })    
     
@@ -32,13 +24,44 @@ describe("integration", () => {
         await admin.disconnect()
 
         app = new App()
-        await app.start()
+        await app.start()        
+	});
 
-        const response = await request('http://localhost:3000').get("/version")
-        expect(response.statusCode).toBe(200)
-        expect(response.body).toEqual('v1')
-        console.log(`Version received: ${JSON.stringify(response.body)}`)
+	afterAll(async () => {
+		await app.stop()
+	});
 
+    /**
+     * Prove the database is correctly seeded with the version.
+     */
+    test("get version", async () => {
+        const versionResponse = await request('http://localhost:3000').get("/version")
+        expect(versionResponse.statusCode).toBe(200)
+        expect(versionResponse.body).toEqual('v1')
+        console.log(`Version received: ${JSON.stringify(versionResponse.body)}`)
+    })
+
+    /**
+     * Prove the database can be written to and queried via the REST API.
+     */
+    test("create and retrieve item", async () => {
+        // Test POST item.
+        const createItemResponse = await request('http://localhost:3000').post("/items")
+            .send({name: "test-item"})
+            .set('Content-type', 'application/json')
+        expect(createItemResponse.statusCode).toBe(201)
+        expect(createItemResponse.header.location).toBeDefined()
+        console.log(`Item created with id: ${JSON.stringify(createItemResponse.header.location)}`)
+
+        const getItemResponse = await request('http://localhost:3000').get(`/items/${createItemResponse.header.location}`)
+        expect(getItemResponse.statusCode).toBe(200)
+        expect(getItemResponse.body.name).toEqual('test-item')
+    })
+
+    /**
+     * Prove that Kafka messages can be consumed and produced by the application.
+     */
+    test("consume and produce messages", async () => {
         const producer = kafka.producer()
     
         await producer.connect()
@@ -65,6 +88,5 @@ describe("integration", () => {
         }, 5000);
 
         await consumer.disconnect()
-        await app.stop()
     })
 })

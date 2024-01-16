@@ -3,9 +3,8 @@
 Under development...
 
 ## Build, Test and Execute
-```
-npm install testcontainers @testcontainers/kafka
-```
+
+To build and test:
 
 ```
 npm install
@@ -13,17 +12,60 @@ npx prisma generate
 npm run test
 ```
 
-When the service is running, get the version via the REST API:
+Run unit and integration tests separately:
+```
+npm run test:unit
+npm run test:integration
+```
 
+The docker-compose file starts Kafka, Zookeeper, Postgres and the application itself.  To build the application container and start the containers:
+```
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+Alternatively, run application in Docker (if not using docker-compose):
+```
+docker build -t demoapp .
+docker run -p 3000:3000 demoapp
+```
+
+Jump onto application container without starting the actual app (to view files etc):
+```
+docker run -it demoapp /bin/sh
+```
+
+Jump onto postgres container (to inspect schema etc):
+```
+docker exec -it postgres bash
+psql -U user -d db
+```
+
+List tables:
+```
+/dt
+```
+
+## App REST API
+
+The database is seeded with a version.  Get the version via the REST API:
 ```
 curl localhost:3000/version
 ```
 
-npm run test:unit
-npm run test:integration
+Items can be created and retrieved. To create an item:
+```
+curl -i -X POST localhost:3000/items -H "Content-Type: application/json" -d '{"name": "test-item"}'
+```
+
+The response location header contains the new Id.  Retrieve the item with:
+```
+curl localhost:3000/version/items/{itemId}
+```
+
+### Test Debug
 
 Add the following to `.vscode/settings.json` under the project root to enable run/debug using the Jest Runner extension in VSCode:
-
 ```
 {
     "jestrunner.jestCommand": "npm run test:integration --",
@@ -31,28 +73,7 @@ Add the following to `.vscode/settings.json` under the project root to enable ru
 }
 ```
 
-docker-compose build --no-cache
-
-Start containers:
-docker-compose up -d
-
-Run app: (NOTE now using the docker-compose)
-```
-docker build -t demoapp .
-docker run -p 3000:3000 demoapp
-```
-
-Jump onto container without running app:
-```
-docker run -it demoapp /bin/sh
-```
-
-docker exec -it postgres bash
-psql -U user -d db
-
-list tables:
-/dt
-
+Change `integation` to `unit` for unit test debugging.
 
 ### Test Errors:
 
@@ -68,7 +89,7 @@ lsof -i -P | grep 3000
 kill -9 <processId>
 ```
 
-### Docker clean up
+### Docker Clean Up
 
 If Docker containers do not clear down they can be manually cleaned up with the following command:
 ```

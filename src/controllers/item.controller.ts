@@ -8,11 +8,31 @@ export class ItemController {
 		this.itemService = itemService
 	}
 
+    async createItem(request: Request, response: Response) {
+        const itemService = this.itemService;
+        if(request.body.name == undefined) {
+            console.log("Item name not set");
+            return response.status(400);
+        }
+        const item = await itemService.createItem(request.body.name);
+        console.log(`Item created with Id: ${item.id} and name ${item.name}`);
+        return response.status(201).location(item.id.toString()).end();
+    }
+
     async getItem(request: Request, response: Response) {
         const itemService = this.itemService;
-        
-        const item = await itemService.getItem();
+        if(request.params.itemId == undefined) {
+            console.log("itemId not set");
+            return response.status(400);
+        }
+        const item = await itemService.getItem(parseInt(request.params.itemId));
 
-        response.status(200).json(item);
+        if(item == null) {
+            console.log(`Item not found with id: ${request.params.itemId}`);
+            return response.status(404);
+        } else {
+            console.log(`Item found with name: ${item}`);
+            return response.status(200).json(item);
+        }
     }
 }

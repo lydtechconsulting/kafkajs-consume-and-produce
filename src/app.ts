@@ -16,6 +16,8 @@ export class App {
     constructor() {
         setConfig();
         this.app = express();
+        this.app.use(express.json());
+        this.app.use(express.urlencoded({ extended: true }));
         mountRoutes(this.app);
     }
 

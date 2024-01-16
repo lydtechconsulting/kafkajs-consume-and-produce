@@ -4,5 +4,5 @@ import { ItemRoutes } from "./item.routes";
 
 export const mountRoutes = (application: Application) => {
   application.use("/version", new VersionRoutes().router);
-  application.use("/item", new ItemRoutes().router);
+  application.use("/items", new ItemRoutes().router);
 };
