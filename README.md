@@ -2,7 +2,7 @@
 
 Under development...
 
-## Build, Test and Execute
+## Build & Test
 
 To build and test:
 
@@ -17,6 +17,10 @@ Run unit and integration tests separately:
 npm run test:unit
 npm run test:integration
 ```
+
+The integration tests use Testcontainers to spin up Kafka, Zookeeper and Postgres in Docker containers.  The application then integrates with these for the end to end tests.
+
+## Run Application
 
 The docker-compose file starts Kafka, Zookeeper, Postgres and the application itself.  To build the application container and start the containers:
 ```
@@ -41,12 +45,7 @@ docker exec -it postgres bash
 psql -U user -d db
 ```
 
-List tables:
-```
-/dt
-```
-
-## App REST API
+## Application REST API
 
 The database is seeded with a version.  Get the version via the REST API:
 ```
