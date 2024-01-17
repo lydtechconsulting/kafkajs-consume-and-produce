@@ -9,13 +9,13 @@ export class ItemController {
 	}
 
     async createItem(request: Request, response: Response) {
-        const itemService = this.itemService;
         if(request.body.name == undefined) {
             console.error("Item name not set");
             return response.status(400);
         }
-        const item = await itemService.createItem(request.body.name);
-        console.log(`Item created with Id: ${item.id} and name ${item.name}`);
+        console.log(`Creating item with name ${request.body.name}`);
+        const item = await this.itemService.createItem(request.body.name);
+        console.log(`Created item with id: ${item.id} - name: ${item.name}`)
         return response.status(201).location(item.id.toString()).end();
     }
 

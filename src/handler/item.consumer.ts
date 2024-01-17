@@ -1,12 +1,12 @@
 import { Consumer, EachMessagePayload, Kafka, KafkaConfig } from 'kafkajs'
-import { DemoService } from '../service/demo.service';
+import { ItemService } from '../service/item.service';
 
-export class DemoConsumer {
-    private readonly demoService: DemoService;
+export class ItemConsumer {
+    private readonly itemService: ItemService;
     private readonly consumer: Consumer;
   
-    constructor(demoService: DemoService, kafkaConfig: KafkaConfig) {
-        this.demoService = demoService
+    constructor(itemService: ItemService, kafkaConfig: KafkaConfig) {
+        this.itemService = itemService
         const kafka = new Kafka(kafkaConfig)
         this.consumer = kafka.consumer({ groupId: 'demo-group' })
     }
@@ -14,7 +14,7 @@ export class DemoConsumer {
     async listen(): Promise<void> {
         try {
             await this.consumer.connect()
-            await this.consumer.subscribe({ topic: 'inbound-topic', fromBeginning: true })
+            await this.consumer.subscribe({ topic: 'create-item', fromBeginning: true })
             await this.consumer.run({ eachMessage: payload => this.handle(payload) })
         } catch(e) {
             console.error(e)
@@ -30,7 +30,8 @@ export class DemoConsumer {
     }
 
     async handle(payload: EachMessagePayload) {
-        console.log({value: payload})
-        this.demoService.process(payload.message.value)
+        console.log(`Received message: ${payload}`)
+        const parsedMessage = JSON.parse(payload.message.value?.toString() || '{}')
+        this.itemService.createItem(parsedMessage.name)
     }
 }

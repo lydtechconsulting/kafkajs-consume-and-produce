@@ -4,14 +4,19 @@ import { Request } from 'express';
 
 describe('ItemController', () => {
     let itemController: ItemController;
-    let itemService: ItemService;
+    let mockItemService: jest.Mocked<ItemService>;
   
     let mockRequest: Request;
     let mockResponse: any;
   
     beforeEach(() => {
-        itemService = new ItemService();
-        itemController = new ItemController(itemService);
+        mockItemService = {
+            getItem: jest.fn(),
+            kafkaService: {} as any,
+            createItem: jest.fn(),
+        };
+      
+        itemController = new ItemController(mockItemService);
         mockRequest = { params: {}, body: {} } as Request;
         mockResponse = {
             status: jest.fn().mockReturnThis(),
@@ -21,17 +26,22 @@ describe('ItemController', () => {
         };
     });
 
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     describe('getItem', () => {
         it('should return 200 if item is found', async () => {
             const mockItem = { id: 1, name: 'test-item' };
+            mockItemService.getItem.mockResolvedValue(mockItem);
             mockRequest.params.itemId = '1';
-            const itemServiceGetItemSpy = jest.spyOn(itemService, "getItem").mockImplementation(async () => mockItem);
 
             await itemController.getItem(mockRequest, mockResponse);
         
-            expect(itemServiceGetItemSpy).toHaveBeenCalledTimes(1);
             expect(mockResponse.status).toHaveBeenCalledWith(200);
             expect(mockResponse.json).toHaveBeenCalledWith(mockItem);
+            expect(mockItemService.getItem).toHaveBeenCalledTimes(1);
+            expect(mockItemService.getItem).toHaveBeenCalledWith(1);
         });
 
         it('should return 400 if itemId is not set', async () => {
@@ -42,11 +52,12 @@ describe('ItemController', () => {
 
         it('should return 404 if item is not found', async () => {
             mockRequest.params.itemId = '1';
-            const itemServiceGetItemSpy = jest.spyOn(itemService, "getItem").mockImplementation(async () => null);
+            mockItemService.getItem.mockResolvedValue(null);
 
             await itemController.getItem(mockRequest, mockResponse);
 
-            expect(itemServiceGetItemSpy).toHaveBeenCalledTimes(1);
+            expect(mockItemService.getItem).toHaveBeenCalledTimes(1);
+            expect(mockItemService.getItem).toHaveBeenCalledWith(1);
             expect(mockResponse.status).toHaveBeenCalledWith(404);
         });
     });
@@ -57,21 +68,20 @@ describe('ItemController', () => {
                 name: 'test-item',
             };
             const mockItem = { id: 1, name: 'test-item' };
-            const itemServiceCreateItemSpy = jest.spyOn(itemService, "createItem").mockImplementation(async () => mockItem);
+            mockItemService.createItem.mockResolvedValue(mockItem);
 
             await itemController.createItem(mockRequest, mockResponse);
 
-            expect(itemServiceCreateItemSpy).toHaveBeenCalledTimes(1);
+            expect(mockItemService.createItem).toHaveBeenCalledTimes(1);
+            expect(mockItemService.createItem).toHaveBeenCalledWith('test-item');
             expect(mockResponse.status).toHaveBeenCalledWith(201);
             expect(mockResponse.location).toHaveBeenCalledWith('1');
         });
 
         it('should return 400 if item name is not set', async () => {
-            const itemServiceCreateItemSpy = jest.spyOn(itemService, "createItem");
-
             await itemController.createItem(mockRequest, mockResponse);
 
-            expect(itemServiceCreateItemSpy).not.toHaveBeenCalled();
+            expect(mockItemService.createItem).not.toHaveBeenCalled();
             expect(mockResponse.status).toHaveBeenCalledWith(400);
         });
     });

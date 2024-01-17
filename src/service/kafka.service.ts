@@ -1,6 +1,6 @@
 import { Producer, KafkaConfig, Kafka, Message } from "kafkajs"
 
-export default class KafkaProducer {
+export default class KafkaService {
 	private readonly producer: Producer
 
 	constructor(kafkaConfig: KafkaConfig) {
@@ -15,6 +15,7 @@ export default class KafkaProducer {
 				topic: topic,
 				messages: [event]
 			});
+			console.log(`Sent event to topic: ${topic}`)
 		} catch (err) {
 			console.error(`Error sending event to topic: ${topic} Error: ${err}`)
 			throw err

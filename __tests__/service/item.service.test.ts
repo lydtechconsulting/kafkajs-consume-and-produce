@@ -1,6 +1,7 @@
 import { Item } from '@prisma/client';
 import prisma from '../../src/db/prisma.client';
 import { ItemService } from '../../src/service/item.service';
+import KafkaService from '../../src/service/kafka.service';
 
 jest.mock('../../src/db/prisma.client', () => ({
     item: {
@@ -9,17 +10,23 @@ jest.mock('../../src/db/prisma.client', () => ({
     },
 }));
 
+
 describe('ItemService', () => {
     let itemService: ItemService;
+    let mockKafkaService: jest.Mocked<KafkaService>;
 
     beforeEach(() => {
-        itemService = new ItemService();
+        mockKafkaService = {
+            producer: {} as any,
+            sendEvent: jest.fn(),
+        } as any;
+
+        itemService = new ItemService(mockKafkaService);
     });
 
     afterEach(() => {
         jest.clearAllMocks();
     });
-
 
     describe('Get item', () => {
         it('should get an item by id', async () => {

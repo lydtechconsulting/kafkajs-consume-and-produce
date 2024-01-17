@@ -2,16 +2,16 @@ import { Server } from "node:http";
 import express, { Application } from "express";
 import { getConfig, setConfig } from "./config/appConfig";
 import { mountRoutes } from "./routes";
-import { DemoConsumer } from "./handler/demo.consumer";
+import { ItemConsumer } from "./handler/item.consumer";
 import { KafkaConfig } from "kafkajs";
 import KafkaService from "./service/kafka.service";
-import { DemoService } from "./service/demo.service";
+import { ItemService } from "./service/item.service";
 
 export class App {
     private readonly app: Application
 
     private server?: Server
-    private demoConsumer?: DemoConsumer
+    private itemConsumer?: ItemConsumer
 
     constructor() {
         setConfig();
@@ -33,12 +33,12 @@ export class App {
         const kafkaConfig = {
             brokers: config.kafka.brokerAddress
         } as KafkaConfig
-        this.demoConsumer = new DemoConsumer(new DemoService(new KafkaService(kafkaConfig)), kafkaConfig);
-        await this.demoConsumer.listen();
+        this.itemConsumer = new ItemConsumer(new ItemService(new KafkaService(kafkaConfig)), kafkaConfig);
+        await this.itemConsumer.listen();
     }
 
     async stop() {
         this.server?.close()
-        await this.demoConsumer?.disconnect()
+        await this.itemConsumer?.disconnect()
     }
 }

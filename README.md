@@ -18,7 +18,7 @@ npm run test:unit
 npm run test:integration
 ```
 
-The integration tests use Testcontainers to spin up Kafka, Zookeeper and Postgres in Docker containers.  The application then integrates with these for the end to end tests.
+The integration tests use Testcontainers to spin up Kafka, Zookeeper and Postgres in Docker containers.  The application then integrates with these for the end to end tests, with the test using the application's REST API and sending and receiving events via Kafka.
 
 ## Run Application
 
@@ -60,6 +60,53 @@ curl -i -X POST localhost:3000/items -H "Content-Type: application/json" -d '{"n
 The response location header contains the new Id.  Retrieve the item with:
 ```
 curl localhost:3000/version/items/{itemId}
+```
+
+Note an event is also written to the `item-created` when an item is created Kafka topic - more below.
+
+## Kafka Messaging
+
+Verify consumer has started and is listening by listing consumer groups:
+```
+docker exec -ti kafka kafka-consumer-groups --bootstrap-server=localhost:9092 --list
+```
+Example output:
+```
+demo-group
+```
+
+Describe the group, showing the application consumer in the group listening to the `create-item` topic:
+```
+docker exec -ti kafka kafka-consumer-groups --bootstrap-server=localhost:9092 -describe --group demo-group
+```
+Example output:
+```
+GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                  HOST            CLIENT-ID
+demo-group      create-item     0          -               0               -               kafkajs-e3325d0b-f360-4f90-bbd7-55302e43a899 /192.168.112.5  kafkajs
+```
+
+An event is written to the `item-created` topic when an item is created (either via calling the REST API or sending an event to `create-item`).
+
+Send an event to the `create-item` topic:
+```
+docker exec -ti kafka kafka-console-producer \
+--topic create-item \
+--broker-list localhost:9092
+```
+Now enter the message:
+```
+{"name": "test-item"}
+
+Consume the `item-created` event from the command line:
+```
+docker exec -ti kafka kafka-console-consumer \
+--topic item-created \
+--bootstrap-server localhost:9092 \
+--from-beginning
+```
+Output:
+```
+{"id":1,"name":"test-item"}
 ```
 
 ### Test Debug
