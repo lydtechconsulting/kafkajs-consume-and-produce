@@ -2,7 +2,7 @@ import { Router } from "express";
 import { ItemController } from "../controllers/item.controller";
 import { ItemService } from "../service/item.service";
 import KafkaService from "../service/kafka.service";
-import { getConfig } from "../config/appConfig";
+import { getConfig } from "../config/app.config";
 import { KafkaConfig } from "kafkajs";
 
 export class ItemRoutes {

@@ -44,7 +44,7 @@ describe("end to end integration tests", () => {
     /**
      * Prove that a REST POST request to create an item results in an item being persisted to the database, that the item can be retrieved via a GET request, and that an outbound 'item-created' event is emitted.
      */
-    test("create and retrieve item via REST API", async () => {
+    test("create item via REST API", async () => {
         // The item name to create.
         const itemName = crypto.randomBytes(4).toString('hex');
 

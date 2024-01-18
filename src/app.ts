@@ -1,6 +1,6 @@
 import { Server } from "node:http";
 import express, { Application } from "express";
-import { getConfig, setConfig } from "./config/appConfig";
+import { getConfig, setConfig } from "./config/app.config";
 import { mountRoutes } from "./routes";
 import { ItemConsumer } from "./handler/item.consumer";
 import { KafkaConfig } from "kafkajs";

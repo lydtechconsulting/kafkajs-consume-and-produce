@@ -19,7 +19,6 @@ module.exports = async () => {
 			'KAFKA_BROKER_ID': '1'
 		})
 		.withExposedPorts(9092, DEFAULT_KAFKA_PORT)
-
 	if(process.env.TESTCONTAINERS_REUSE_ENABLE === 'true') {
 		kafkaContainer = kafkaContainer.withReuse()
 	}
