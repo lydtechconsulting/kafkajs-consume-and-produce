@@ -107,9 +107,11 @@ docker exec -ti kafka kafka-console-producer \
 --topic create-item \
 --broker-list localhost:9092
 ```
+
 Now enter the message:
 ```
 {"name": "test-item"}
+```
 
 Consume the `item-created` event from the command line:
 ```
