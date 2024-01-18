@@ -7,7 +7,7 @@ Typescript application using the KafkaJS client library to integrate with the Ka
 The application provides a REST API to create and retrieve items.  When an item is created (persisted to the database), it emits an event to the `item-created` Kafka topic.  It also consumes messages from the `create-item` topic which likewise persists the new item on the database and emits corresponding events to the `item-created` topic.
 
 
-![Demo Application](kafkajs-consume-and-produce.png)
+![Demo Application](kafkajs-consume-produce.png)
 
 
 ## Build & Test
@@ -25,14 +25,6 @@ Run unit and integration tests separately:
 npm run test:unit
 npm run test:integration
 ```
-
-The integration tests use Testcontainers to spin up Kafka, Zookeeper and Postgres in Docker containers.  The application then integrates with these for the end to end tests, with the test using the application's REST API and sending and receiving events via Kafka.
-
-To keep the Kafka and Postgres containers up between test runs, add the following variable to the `.env` file in the root of the project:
-```
-TESTCONTAINERS_REUSE_ENABLE=true
-```
-Remove or change to `false` for Testcontainers to bring down the Docker containers at the end of a test run.
 
 ## Run Application
 
@@ -125,6 +117,18 @@ Output:
 {"id":1,"name":"test-item"}
 ```
 
+## Integration Tests
+
+The integration tests use Testcontainers to spin up Kafka, Zookeeper and Postgres in Docker containers.  The application then integrates with these for the end to end tests, with the test using the application's REST API and sending and receiving events via Kafka.
+
+![Demo Application](integration-test.png)
+
+To keep the Kafka and Postgres containers up between test runs, add the following variable to the `.env` file in the root of the project:
+```
+TESTCONTAINERS_REUSE_ENABLE=true
+```
+Remove or change to `false` for Testcontainers to bring down the Docker containers at the end of a test run.
+
 ### Test Debug
 
 Add the following to `.vscode/settings.json` under the project root to enable run/debug using the Jest Runner extension in VSCode:
@@ -137,7 +141,7 @@ Add the following to `.vscode/settings.json` under the project root to enable ru
 
 Change `integation` to `unit` for unit test debugging.
 
-### Test Errors:
+## Test Errors:
 
 The app runs on port 3000.  If the app does not cleanly stop at the end of a test run you may get an error on the next test run:
 
@@ -151,7 +155,7 @@ lsof -i -P | grep 3000
 kill -9 <processId>
 ```
 
-### Docker Clean Up
+## Docker Clean Up
 
 If Docker containers do not clear down they can be manually cleaned up with the following command:
 ```
