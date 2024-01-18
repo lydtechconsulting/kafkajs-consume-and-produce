@@ -2,7 +2,7 @@ import { Kafka, KafkaMessage } from "kafkajs";
 import { App } from "../../src/app";
 import waitForExpect from "wait-for-expect";
 import request from "supertest";
-const crypto = require('crypto');
+import crypto from "crypto";
 
 describe("end to end integration tests", () => {
 
@@ -10,11 +10,10 @@ describe("end to end integration tests", () => {
     let kafka: Kafka
 
 	beforeAll(async () => {
-        const globalAny: any = global;
-		const globalBrokerUrl = globalAny.__KAFKA_BROKERS__;
+        const brokerUrl = process.env.KAFKA_BROKERS
         kafka = new Kafka({
             clientId: 'test-client',
-            brokers: globalBrokerUrl,
+            brokers: [brokerUrl!],
         })    
     
         const admin = kafka.admin()   

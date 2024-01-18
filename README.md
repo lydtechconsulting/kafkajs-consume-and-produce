@@ -20,6 +20,12 @@ npm run test:integration
 
 The integration tests use Testcontainers to spin up Kafka, Zookeeper and Postgres in Docker containers.  The application then integrates with these for the end to end tests, with the test using the application's REST API and sending and receiving events via Kafka.
 
+To keep the Kafka and Postgres containers up between test runs, add the following variable to the `.env` file in the root of the project:
+```
+TESTCONTAINERS_REUSE_ENABLE=true
+```
+Remove or change to `false` for Testcontainers to bring down the Docker containers at the end of a test run.
+
 ## Run Application
 
 The docker-compose file starts Kafka, Zookeeper, Postgres and the application itself.  To build the application container and start the containers:

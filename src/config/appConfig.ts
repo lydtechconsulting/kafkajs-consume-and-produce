@@ -1,18 +1,13 @@
 import { AppConfig } from "./types";
 
+const DEFAULT_KAFKA_URL = "kafka:9093"
 let config: AppConfig;
 
-// info: you can make this so it reads different variables from process.env, custom config files, etc...
-//       whilst ensuring the rest of the app only cares about the config, not how it's loaded
-//       and keeps the typescript types in sync.
-// note: you may want to 'parameterize' this for different environments
 export const setConfig = (): void => {
-
-    let kafkaBrokers: string[] = ["kafka:9093"]
-    const globalAny: any = global;
-		const globalBrokerUrl = globalAny.__KAFKA_BROKERS__;
-    if(globalBrokerUrl) {
-        kafkaBrokers = globalBrokerUrl
+    let kafkaBrokers: string[] = [DEFAULT_KAFKA_URL]
+    const brokerUrlOverride = process.env.KAFKA_BROKERS
+    if(brokerUrlOverride) {
+        kafkaBrokers = [brokerUrlOverride]
     } 
     console.log(`kafkaBrokers: ${kafkaBrokers}`)
     config = {
