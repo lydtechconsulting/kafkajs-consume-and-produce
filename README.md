@@ -1,6 +1,14 @@
-# Testing a Typescript application with Testcontainers
+# KafkaJS Consume and Produce Demo Project
 
-Under development...
+## Overview
+
+Typescript application using the KafkaJS client library to integrate with the Kafka messaging broker to send and receive events.  It uses Prisma as the ORM tool to integrate with the Postgres database.  The project also demonstrates integration testing the application.  It uses Testcontainers to spin up Kafka and Postgres in Docker containers for the application to integrate with, enabling end to end testing.
+
+The application provides a REST API to create and retrieve items.  When an item is created (persisted to the database), it emits an event to the `item-created` Kafka topic.  It also consumes messages from the `create-item` topic which likewise persists the new item on the database and emits corresponding events to the `item-created` topic.
+
+
+![Demo Application](kafkajs-consume-and-produce.png)
+
 
 ## Build & Test
 
