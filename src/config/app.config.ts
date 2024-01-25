@@ -1,14 +1,9 @@
 import { AppConfig } from "./types";
 
-const DEFAULT_KAFKA_URL = "kafka:9093"
 let config: AppConfig;
 
 export const setConfig = (): void => {
-    let kafkaBrokers: string[] = [DEFAULT_KAFKA_URL]
-    const brokerUrlOverride = process.env.KAFKA_BROKERS
-    if(brokerUrlOverride) {
-        kafkaBrokers = [brokerUrlOverride]
-    } 
+    const kafkaBrokers = [process.env.KAFKA_BROKERS!]
     console.log(`kafkaBrokers: ${kafkaBrokers}`)
     config = {
         server: {
@@ -21,9 +16,9 @@ export const setConfig = (): void => {
 };
 
 export const getConfig = (): AppConfig => {
-  if (!config) {
-    throw new Error("Config not set");
-  }
+    if (!config) {
+        throw new Error("Config not set");
+    }
 
-  return config;
+    return config;
 };

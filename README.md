@@ -34,12 +34,6 @@ docker-compose build --no-cache
 docker-compose up -d
 ```
 
-Alternatively, run application in Docker (if not using docker-compose):
-```
-docker build -t demoapp .
-docker run -p 3000:3000 demoapp
-```
-
 Jump onto application container without starting the actual app (to view files etc):
 ```
 docker run -it demoapp /bin/sh
@@ -63,9 +57,15 @@ Items can be created and retrieved. To create an item:
 curl -i -X POST localhost:3000/items -H "Content-Type: application/json" -d '{"name": "test-item"}'
 ```
 
-The response location header contains the new Id.  Retrieve the item with:
+The response location header contains the new Id.  e.g.:
 ```
-curl localhost:3000/version/items/{itemId}
+HTTP/1.1 201 Created
+Location: 1
+```
+
+Retrieve the item with:
+```
+curl localhost:3000/items/{itemId}
 ```
 
 Note an event is also written to the `item-created` when an item is created Kafka topic - more below.
