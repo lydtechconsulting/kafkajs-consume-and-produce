@@ -6,9 +6,11 @@ Typescript application using the KafkaJS client library to integrate with the Ka
 
 The application provides a REST API to create and retrieve items.  When an item is created (persisted to the database), it emits an event to the `item-created` Kafka topic.  It also consumes messages from the `create-item` topic which likewise persists the new item on the database and emits corresponding events to the `item-created` topic.
 
-
 ![Demo Application](kafkajs-consume-produce.png)
 
+This repo accompanies the following article:
+
+- [KafkaJS: Integration Testing With Testcontainers](https://www.lydtechconsulting.com/blog-kafkajs-testcontainers.html): Demonstrating integration testing a KafkaJS Typescript application using Testcontainers and Docker.
 
 ## Build & Test
 
